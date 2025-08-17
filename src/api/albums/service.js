@@ -1,5 +1,7 @@
 import { nanoid } from 'nanoid';
 import pool from '../../database/postgresPool.js';
+import NotFoundError from '../../exceptions/notFoundError.js';
+import ServerError from '../../exceptions/serverError.js';
 
 export default class AlbumService {
   // Post album
@@ -12,6 +14,10 @@ export default class AlbumService {
       [id, name, year]
     );
 
+    if (!result.rows.length) {
+      throw new ServerError();
+    }
+
     return result.rows[0]?.id;
   }
 
@@ -23,7 +29,7 @@ export default class AlbumService {
     );
 
     if (albumResult.rowCount === 0) {
-      throw new Error('Album not found!');
+      throw new NotFoundError('Album not found!');
     }
 
     const album = albumResult.rows[0];
@@ -59,7 +65,7 @@ export default class AlbumService {
     );
 
     if (result.rowCount === 0) {
-      throw new Error('Album not found!');
+      throw new NotFoundError('Album not found!');
     }
 
     return result.rows[0];
@@ -72,7 +78,7 @@ export default class AlbumService {
     );
 
     if (result.rowCount === 0) {
-      throw new Error('Album not found!');
+      throw new NotFoundError('Album not found!');
     }
 
     return result.rows[0]?.id;

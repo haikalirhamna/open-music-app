@@ -1,5 +1,7 @@
 import { nanoid } from 'nanoid';
 import pool from '../../database/postgresPool.js';
+import BadRequestError from '../../exceptions/badRequestError.js';
+import NotFoundError from '../../exceptions/notFoundError.js';
 
 export default class SongService {
   // Post song
@@ -11,6 +13,10 @@ export default class SongService {
       'INSERT INTO songs (id, title, year, genre, performer, duration, albumid) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
       [id, title, year, genre, performer, duration, albumId]
     );
+
+    if (!result.rows.length) {
+      throw new BadRequestError('Song not added');
+    }
 
     return result.rows[0]?.id;
   }
@@ -37,7 +43,7 @@ export default class SongService {
     const result = await pool.query(query, values);
 
     if (result.rowCount === 0) {
-      throw new Error('Song not found!');
+      throw new NotFoundError('Song not found!');
     }
 
     return result.rows;
@@ -50,7 +56,7 @@ export default class SongService {
     );
 
     if (result.rowCount === 0) {
-      throw new Error('Song not found!');
+      throw new NotFoundError('Song not found!');
     }
 
     return result.rows[0];
@@ -64,7 +70,7 @@ export default class SongService {
     );
 
     if (result.rowCount === 0) {
-      throw new Error('Song not found!');
+      throw new NotFoundError('Song not found!');
     }
 
     return result.rows[0];
@@ -77,7 +83,7 @@ export default class SongService {
     );
 
     if (result.rowCount === 0) {
-      throw new Error('Song not found!');
+      throw new NotFoundError('Song not found!');
     }
 
     return result.rows[0];

@@ -1,8 +1,8 @@
+import ClientError from '../../exceptions/clientError.js';
 export default class SongHandler {
-  constructor(service, { SongValidator, IdValidator }) {
+  constructor(service, { SongValidator }) {
     this._service = service;
     this._SongValidator = SongValidator;
-    this._IdValidator = IdValidator;
 
     this.postSong = this.postSong.bind(this);
     this.getSongs = this.getSongs.bind(this);
@@ -16,11 +16,9 @@ export default class SongHandler {
       const { error } = this._SongValidator.validate(request.payload);
 
       if (error) {
-        return h.response({
-          status: 'fail',
-          message: error.details[0].message,
-        }).code(400);
+        throw new ClientError(error.details[0].message);
       }
+
       const song = await this._service.addSong(request.payload);
       return h.response({
         status: 'success',
@@ -31,8 +29,8 @@ export default class SongHandler {
     } catch (err) {
       return h.response({
         status: 'fail',
-        message: 'Song not added'
-      }).code(404);
+        message: err.message
+      }).code(err.statusCode);
     }
   }
 
@@ -49,20 +47,12 @@ export default class SongHandler {
       return h.response({
         status: 'fail',
         message: err.message
-      }).code(404);
+      }).code(err.statusCode);
     }
   }
 
   async getSongById(request, h) {
     try {
-      const { error } = this._IdValidator.validate(request.params);
-
-      if (error) {
-        return h.response({
-          status: 'fail',
-          message: error.details[0].message,
-        }).code(404);
-      }
 
       const song = await this._service.getSong(request.params);
       return h.response({
@@ -75,31 +65,18 @@ export default class SongHandler {
       return h.response({
         status: 'fail',
         message: err.message
-      }).code(404);
+      }).code(err.statusCode);
     }
   }
 
   async putSongById(request, h) {
     try {
-      // Validate ID from params
-      const { error: idError } = this._IdValidator.validate(request.params);
+      const { error } = this._SongValidator.validate(request.payload);
 
-      if (idError) {
-        return h.response({
-          status: 'fail',
-          message: idError.details[0].message,
-        }).code(404);
+      if (error) {
+        throw new ClientError(error.details[0].message);
       }
 
-      // Validate payload (name, year)
-      const { error: payloadError } = this._SongValidator.validate(request.payload);
-
-      if (payloadError) {
-        return h.response({
-          status: 'fail',
-          message: payloadError.details[0].message,
-        }).code(400);
-      }
       const updated = await this._service.putSong({
         id: request.params.id,
         ...request.payload
@@ -112,22 +89,13 @@ export default class SongHandler {
       return h.response({
         status: 'fail',
         message: err.message
-      }).code(404);
+      }).code(err.statusCode);
     }
 
   }
 
   async deleteSongById(request, h) {
     try {
-      const { error } = this._IdValidator.validate(request.params);
-
-      if (error) {
-        return h.response({
-          status: 'fail',
-          message: error.details[0].message,
-        }).code(404);
-      }
-
       const deleted = await this._service.deleteSong(request.params);
       return h.response({
         status: 'success',
@@ -137,7 +105,7 @@ export default class SongHandler {
       return h.response({
         status: 'fail',
         message: err.message
-      }).code(404);
+      }).code(err.statusCode);
     }
   }
 

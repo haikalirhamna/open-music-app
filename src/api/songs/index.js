@@ -1,7 +1,7 @@
 import routes from './routes.js';
 import SongHandler from './handler.js';
 import SongService from './service.js';
-import { SongValidator, IdValidator } from '../../validators/index.js';
+import { SongValidator } from '../../validators/index.js';
 
 export default {
   name: 'songs',
@@ -9,7 +9,6 @@ export default {
     const service = new SongService();
     const handler = new SongHandler(service, {
       SongValidator: SongValidator,
-      IdValidator: IdValidator
     });
 
     server.route(routes(handler));
