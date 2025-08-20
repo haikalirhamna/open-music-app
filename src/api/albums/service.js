@@ -1,7 +1,6 @@
 import { nanoid } from 'nanoid';
 import pool from '../../database/postgresPool.js';
 import NotFoundError from '../../exceptions/notFoundError.js';
-import ServerError from '../../exceptions/serverError.js';
 
 export default class AlbumService {
   // Post album
@@ -13,10 +12,6 @@ export default class AlbumService {
       'INSERT INTO albums (id, name, year) VALUES ($1, $2, $3) RETURNING id',
       [id, name, year]
     );
-
-    if (!result.rows.length) {
-      throw new ServerError();
-    }
 
     return result.rows[0]?.id;
   }

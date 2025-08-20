@@ -48,3 +48,15 @@ export const PostPlaylistValidator = Joi.object({
 export const PostPlaylistSongValidator = Joi.object({
   songId: Joi.string().required()
 });
+
+// POST /collaborations
+export const PostCollaboratorValidator = Joi.object({
+  playlistId: Joi.string(),
+  userId: Joi.string()
+});
+
+// DELETE /collaborations
+export const DeleteCollaboratorValidator = Joi.object({
+  playlistId: Joi.string(),
+  userId: Joi.string()
+});

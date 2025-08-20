@@ -7,6 +7,16 @@ export default (handler) => [
   {
     method: 'POST',
     path: '/authentications',
-    handler: handler.postUser
+    handler: handler.postAuth
+  },
+  {
+    method: 'PUT',
+    path: '/authentications',
+    handler: handler.putAuth
+  },
+  {
+    method: 'DELETE',
+    path: '/authentications',
+    handler: handler.deleteAuth
   },
 ];

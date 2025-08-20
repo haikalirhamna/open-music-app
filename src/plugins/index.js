@@ -1,6 +1,8 @@
 import albumsPlugin from '../api/albums/index.js';
 import songsPlugin from '../api/songs/index.js';
 import userPlugin from '../api/users/index.js';
+import playlistPlugin from '../api/playlists/index.js';
+import collaboratorPlugin from '../api/collaborations/index.js';
 
 export default {
   name: 'openmusic',
@@ -10,6 +12,8 @@ export default {
       albumsPlugin,
       songsPlugin,
       userPlugin,
+      playlistPlugin,
+      collaboratorPlugin,
     ]);
   }
 };
